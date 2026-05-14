@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gramakhata.ui.theme.GramaKhataTheme
 
-// ✅ FIX 1: Plain data class — no MutableState inside
+
 data class Customer(
     val id: Int,
     val name: String,
@@ -49,7 +49,7 @@ fun CustomerScreen() {
     var nameInput by remember { mutableStateOf("") }
     var idCounter by remember { mutableIntStateOf(0) }
 
-    // ✅ FIX 2: mutableStateListOf with plain Customer objects
+    
     val customerList = remember { mutableStateListOf<Customer>() }
 
     Column(
@@ -57,7 +57,7 @@ fun CustomerScreen() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // ── Header ──
+
         Text(
             text = "🏪 Grama Khata",
             fontSize = 28.sp,
@@ -73,7 +73,7 @@ fun CustomerScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // ── Add Customer Card ──
+        
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -112,7 +112,7 @@ fun CustomerScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // ── Due Dashboard Header ──
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -132,17 +132,17 @@ fun CustomerScreen() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // ── Customer List (sorted by highest balance owed) ──
+        
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(
-                // ✅ FIX 3: Sort by highest amount owed (Due Dashboard requirement)
+                
                 items = customerList.sortedByDescending { it.balance },
                 key = { it.id }
             ) { customer ->
                 CustomerItem(
                     customer = customer,
                     onCredit = { amount ->
-                        // ✅ FIX 4: Replace the object instead of mutating state inside data class
+                        
                         val index = customerList.indexOfFirst { it.id == customer.id }
                         if (index != -1) {
                             customerList[index] = customer.copy(balance = customer.balance + amount)
@@ -172,10 +172,10 @@ fun CustomerItem(
 ) {
     var amountInput by remember { mutableStateOf("") }
 
-    // Color based on balance
+    
     val balanceColor = when {
-        customer.balance > 0 -> Color(0xFFD32F2F)  // Red  = owes money
-        customer.balance < 0 -> Color(0xFF388E3C)  // Green = overpaid
+        customer.balance > 0 -> Color(0xFFD32F2F) 
+        customer.balance < 0 -> Color(0xFF388E3C)  
         else -> Color.Gray
     }
 
@@ -186,7 +186,7 @@ fun CustomerItem(
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
 
-            // ── Customer Name + Balance Row ──
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -201,7 +201,7 @@ fun CustomerItem(
                     Text(
                         text = when {
                             customer.balance > 0 -> "⚠ Owes ₹${customer.balance}"
-                            customer.balance < 0 -> "✅ Advance ₹${-customer.balance}"
+                            customer.balance < 0 -> " Advance ₹${-customer.balance}"
                             else -> "✔ Settled"
                         },
                         fontSize = 14.sp,
@@ -210,7 +210,7 @@ fun CustomerItem(
                     )
                 }
 
-                // Delete button
+                
                 TextButton(onClick = onDelete) {
                     Text("🗑", fontSize = 18.sp)
                 }
@@ -218,7 +218,7 @@ fun CustomerItem(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // ── Amount Input + Buttons ──
+        
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -234,7 +234,7 @@ fun CustomerItem(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // ➕ Credit (gave goods)
+                
                 Button(
                     onClick = {
                         val amt = amountInput.toIntOrNull()
@@ -254,7 +254,6 @@ fun CustomerItem(
 
                 Spacer(modifier = Modifier.width(6.dp))
 
-                // ➖ Payment received
                 Button(
                     onClick = {
                         val amt = amountInput.toIntOrNull()
@@ -273,7 +272,6 @@ fun CustomerItem(
                 }
             }
 
-            // ── Daily Collection Report hint ──
             if (customer.balance != 0) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Box(
